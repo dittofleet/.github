@@ -6,6 +6,7 @@ Tools for easier multi-environment agentic development.
 
 - [**weblab**](https://github.com/dittofleet/weblab): test and explore web apps in a real browser. Drive them, check them, and capture screenshots, video and traces.
 - [**dropcube**](https://github.com/dittofleet/dropcube): a write-only file drop for agents on remote machines, with private view links for you. Runs on Cloudflare R2 and Workers.
+- [**navi**](https://github.com/dittofleet/navi): hey, listen! Notifications on your phone from coding agents, through ntfy.
 - [**whatagain**](https://github.com/dittofleet/whatagain): a todo list for coding agents, scoped to repos.
 - [**rm-to-trash**](https://github.com/dittofleet/rm-to-trash): `rm`, but to the Trash, so anything an agent deletes by mistake can be recovered.
 - [**skills**](https://github.com/dittofleet/skills): agent skills for multi-environment development.
