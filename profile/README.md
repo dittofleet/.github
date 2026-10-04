@@ -15,6 +15,7 @@ Tools for easier multi-environment agentic development.
 
 - [**port-pool**](https://github.com/dittofleet/port-pool): hands out unique ports so you can test several worktrees or copies of a project in parallel.
 - [**lichen**](https://github.com/dittofleet/lichen): keeps dotfiles, configs and agent skills in sync across macOS machines.
+- [**terrier**](https://github.com/dittofleet/terrier): one registry of your repos, shared by your other tools, so a project registered once shows up in all of them.
 
 ### For your Mac
 
