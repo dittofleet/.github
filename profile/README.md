@@ -15,6 +15,7 @@ Tools for easier multi-environment agentic development.
 
 - <img src="https://raw.githubusercontent.com/dittofleet/port-pool/main/assets/icon.svg" width="20" height="20" align="top" alt=""> [**port-pool**](https://github.com/dittofleet/port-pool): hands out unique ports so you can test several worktrees or copies of a project in parallel.
 - <img src="https://raw.githubusercontent.com/dittofleet/lichen/main/assets/icon.svg" width="20" height="20" align="top" alt=""> [**lichen**](https://github.com/dittofleet/lichen): keeps dotfiles, configs and agent skills in sync across macOS machines.
+- <img src="https://raw.githubusercontent.com/dittofleet/crosstalk/main/assets/icon.svg" width="20" height="20" align="top" alt=""> [**crosstalk**](https://github.com/dittofleet/crosstalk): lets the apps on your Macs message each other and share status and settings, through a hub on your own Cloudflare account.
 - <img src="https://raw.githubusercontent.com/dittofleet/terrier/main/assets/icon.svg" width="20" height="20" align="top" alt=""> [**terrier**](https://github.com/dittofleet/terrier): one registry of your repos, shared by your other tools, so a project registered once shows up in all of them.
 
 ### For your Mac
