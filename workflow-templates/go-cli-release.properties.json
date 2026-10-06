@@ -1,0 +1,7 @@
+{
+  "name": "Go CLI release",
+  "description": "Builds a dittofleet Go CLI for macOS and Linux and publishes a release when a vX.Y.Z tag is pushed. Uses go-cli-kit's shared release workflow.",
+  "iconName": "octicon rocket",
+  "categories": ["Go"],
+  "filePatterns": ["^go\\.mod$"]
+}

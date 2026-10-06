@@ -1,0 +1,30 @@
+name: Check release tag
+description: Fail unless the pushed tag is vX.Y.Z and points at a commit on main.
+
+# The tag is stamped into each build as its version, and `update` compares
+# versions numerically, so the format has to be uniform. Being on main
+# keeps a tag pushed from a branch from publishing unreviewed code.
+#
+# Needs no checkout and no credentials beyond the job's own token.
+
+runs:
+  using: composite
+  steps:
+    - name: Ensure tag is semver
+      shell: bash
+      run: |
+        if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo "Tag '$GITHUB_REF_NAME' is not vX.Y.Z."
+          exit 1
+        fi
+
+    - name: Ensure tag is on main
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        STATUS=$(gh api "repos/${GITHUB_REPOSITORY}/compare/main...${GITHUB_SHA}" --jq .status)
+        if [ "$STATUS" != "identical" ] && [ "$STATUS" != "behind" ]; then
+          echo "Release tag must point to a commit on main (got: $STATUS)."
+          exit 1
+        fi
