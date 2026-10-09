@@ -21,3 +21,4 @@ Tools for easier multi-environment agentic development.
 ### For your Mac
 
 - <img src="https://raw.githubusercontent.com/dittofleet/headroom/main/assets/icon.svg" width="20" height="20" align="top" alt=""> [**headroom**](https://github.com/dittofleet/headroom): a menu bar app for your Claude and Codex usage limits.
+- <img src="https://raw.githubusercontent.com/dittofleet/figment/main/assets/icon.svg" width="20" height="20" align="top" alt=""> [**figment**](https://github.com/dittofleet/figment): virtual displays of any size, including 4K and HiDPI, for a Mac with no monitor or room for more.
