@@ -1,23 +1,26 @@
 #!/bin/sh
 # Installs a CLI from its latest GitHub release:
 #
-#   curl -fsSL https://raw.githubusercontent.com/dittofleet/.github/main/install.sh | sh -s <owner>/<name>
+#   curl -fsSL https://raw.githubusercontent.com/dittofleet/.github/main/install.sh | sh -s <owner>/<repo> [<binary>]
 #
-# A bare <name> is a dittofleet CLI.
+# A bare <repo> is a dittofleet CLI. <binary> names the release assets
+# (<binary>-<os>-<arch>) and the installed command, and defaults to <repo>.
 #
-# It goes in ~/.local/bin, or <NAME>_INSTALL_DIR (navi: NAVI_INSTALL_DIR,
+# It goes in ~/.local/bin, or <BINARY>_INSTALL_DIR (navi: NAVI_INSTALL_DIR,
 # port-pool: PORT_POOL_INSTALL_DIR). Then the CLI's own `postinstall`
 # command does its first-time setup.
 set -eu
 
 case "${1:-}" in
-  */*) OWNER=${1%%/*} NAME=${1#*/} ;;
-  *) OWNER=dittofleet NAME=${1:-} ;;
+  */*) OWNER=${1%%/*} REPO=${1#*/} ;;
+  *) OWNER=dittofleet REPO=${1:-} ;;
 esac
-usage() { echo "usage: sh -s <owner>/<name>, e.g. sh -s dittofleet/navi" >&2; exit 1; }
+BINARY=${2:-$REPO}
+usage() { echo "usage: sh -s <owner>/<repo> [<binary>], e.g. sh -s dittofleet/navi" >&2; exit 1; }
 case "$OWNER" in "" | *[!A-Za-z0-9-]*) usage ;; esac
-case "$NAME" in "" | *[!a-z0-9-]*) usage ;; esac
-VAR="$(printf %s "$NAME" | tr 'a-z-' 'A-Z_')_INSTALL_DIR"
+case "$REPO" in "" | *[!A-Za-z0-9._-]*) usage ;; esac
+case "$BINARY" in "" | *[!a-z0-9-]*) usage ;; esac
+VAR="$(printf %s "$BINARY" | tr 'a-z-' 'A-Z_')_INSTALL_DIR"
 eval "DEST=\${$VAR:-\$HOME/.local/bin}"
 
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -26,32 +29,32 @@ case "$(uname -m)" in
   x86_64) ARCH=x64 ;;
   *) ARCH=$(uname -m) ;;
 esac
-URL="https://github.com/$OWNER/$NAME/releases/latest/download/$NAME-$OS-$ARCH"
+URL="https://github.com/$OWNER/$REPO/releases/latest/download/$BINARY-$OS-$ARCH"
 
 mkdir -p "$DEST"
 # Staged next to the binary, so the install is a rename: a running copy
 # keeps its old file, and an interruption cannot leave a truncated one.
-TMP=$(mktemp "$DEST/.$NAME.XXXXXX")
+TMP=$(mktemp "$DEST/.$BINARY.XXXXXX")
 trap 'rm -f "$TMP"' EXIT
 
 echo "Downloading $URL..." >&2
 curl -fsSL "$URL" -o "$TMP" || {
-  echo "Could not download $NAME for $OS-$ARCH. Not every CLI is built for every system." >&2
+  echo "Could not download $BINARY for $OS-$ARCH. Not every CLI is built for every system." >&2
   exit 1
 }
 chmod 755 "$TMP"
-mv "$TMP" "$DEST/$NAME"
-echo "Installed $NAME to $DEST/$NAME" >&2
+mv "$TMP" "$DEST/$BINARY"
+echo "Installed $BINARY to $DEST/$BINARY" >&2
 
 case ":$PATH:" in
   *":$DEST:"*) ;;
-  *) echo "Note: $DEST is not in \$PATH. Add it to your shell profile to use $NAME." >&2 ;;
+  *) echo "Note: $DEST is not in \$PATH. Add it to your shell profile to use $BINARY." >&2 ;;
 esac
 
 # Under `curl | sh` stdin is this script, so setup gets the terminal
 # instead, when there is one, for its questions.
 if (: </dev/tty) 2>/dev/null; then
-  "$DEST/$NAME" postinstall </dev/tty
+  "$DEST/$BINARY" postinstall </dev/tty
 else
-  "$DEST/$NAME" postinstall </dev/null
+  "$DEST/$BINARY" postinstall </dev/null
 fi
