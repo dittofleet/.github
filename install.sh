@@ -1,21 +1,25 @@
 #!/bin/sh
 # Installs a CLI from its latest GitHub release:
 #
-#   curl -fsSL https://raw.githubusercontent.com/dittofleet/.github/main/install.sh | sh -s <owner>/<name>
+#   curl -fsSL https://raw.githubusercontent.com/dittofleet/.github/main/install.sh | sh -s <owner>/<repo> [<binary>]
 #
-# A bare <name> is a dittofleet CLI.
+# A bare <repo> is a dittofleet CLI. <binary> names the release assets
+# (<binary>-<os>-<arch>) and the installed command, and defaults to
+# <repo> (sylophi/PReviewer passes prv).
 #
-# It goes in ~/.local/bin, or <NAME>_INSTALL_DIR (navi: NAVI_INSTALL_DIR,
+# It goes in ~/.local/bin, or <BINARY>_INSTALL_DIR (navi: NAVI_INSTALL_DIR,
 # port-pool: PORT_POOL_INSTALL_DIR). Then the CLI's own `postinstall`
 # command does its first-time setup.
 set -eu
 
 case "${1:-}" in
-  */*) OWNER=${1%%/*} NAME=${1#*/} ;;
-  *) OWNER=dittofleet NAME=${1:-} ;;
+  */*) OWNER=${1%%/*} REPO=${1#*/} ;;
+  *) OWNER=dittofleet REPO=${1:-} ;;
 esac
-usage() { echo "usage: sh -s <owner>/<name>, e.g. sh -s dittofleet/navi" >&2; exit 1; }
+NAME=${2:-$REPO}
+usage() { echo "usage: sh -s <owner>/<repo> [<binary>], e.g. sh -s dittofleet/navi" >&2; exit 1; }
 case "$OWNER" in "" | *[!A-Za-z0-9-]*) usage ;; esac
+case "$REPO" in "" | *[!A-Za-z0-9._-]*) usage ;; esac
 case "$NAME" in "" | *[!a-z0-9-]*) usage ;; esac
 VAR="$(printf %s "$NAME" | tr 'a-z-' 'A-Z_')_INSTALL_DIR"
 eval "DEST=\${$VAR:-\$HOME/.local/bin}"
@@ -26,7 +30,7 @@ case "$(uname -m)" in
   x86_64) ARCH=x64 ;;
   *) ARCH=$(uname -m) ;;
 esac
-URL="https://github.com/$OWNER/$NAME/releases/latest/download/$NAME-$OS-$ARCH"
+URL="https://github.com/$OWNER/$REPO/releases/latest/download/$NAME-$OS-$ARCH"
 
 mkdir -p "$DEST"
 # Staged next to the binary, so the install is a rename: a running copy
