@@ -1,17 +1,22 @@
 #!/bin/sh
-# Installs a dittofleet CLI from its latest release:
+# Installs a CLI from its latest GitHub release:
 #
-#   curl -fsSL https://raw.githubusercontent.com/dittofleet/.github/main/install.sh | sh -s <name>
+#   curl -fsSL https://raw.githubusercontent.com/dittofleet/.github/main/install.sh | sh -s <owner>/<name>
+#
+# A bare <name> is a dittofleet CLI.
 #
 # It goes in ~/.local/bin, or <NAME>_INSTALL_DIR (navi: NAVI_INSTALL_DIR,
 # port-pool: PORT_POOL_INSTALL_DIR). Then the CLI's own `postinstall`
 # command does its first-time setup.
 set -eu
 
-NAME="${1:-}"
-case "$NAME" in
-  "" | *[!a-z0-9-]*) echo "usage: sh -s <name>, e.g. sh -s navi" >&2; exit 1 ;;
+case "${1:-}" in
+  */*) OWNER=${1%%/*} NAME=${1#*/} ;;
+  *) OWNER=dittofleet NAME=${1:-} ;;
 esac
+usage() { echo "usage: sh -s <owner>/<name>, e.g. sh -s dittofleet/navi" >&2; exit 1; }
+case "$OWNER" in "" | *[!A-Za-z0-9-]*) usage ;; esac
+case "$NAME" in "" | *[!a-z0-9-]*) usage ;; esac
 VAR="$(printf %s "$NAME" | tr 'a-z-' 'A-Z_')_INSTALL_DIR"
 eval "DEST=\${$VAR:-\$HOME/.local/bin}"
 
@@ -21,7 +26,7 @@ case "$(uname -m)" in
   x86_64) ARCH=x64 ;;
   *) ARCH=$(uname -m) ;;
 esac
-URL="https://github.com/dittofleet/$NAME/releases/latest/download/$NAME-$OS-$ARCH"
+URL="https://github.com/$OWNER/$NAME/releases/latest/download/$NAME-$OS-$ARCH"
 
 mkdir -p "$DEST"
 # Staged next to the binary, so the install is a rename: a running copy
